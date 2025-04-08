@@ -1,0 +1,16 @@
+---
+# aqua - Declarative CLI Version Manager
+# https://aquaproj.github.io/
+# checksum:
+#   enabled: true
+#   require_checksum: true
+#   supported_envs:
+#   - all
+registries:
+- type: standard
+  ref: v4.332.1 # renovate: depName=aquaproj/aqua-registry
+packages:
+- name: go-task/task@v3.42.1
+- name: golang/go@go1.24.1
+- name: fujiwara/cfft@v0.8.2
+- name: fujiwara/lambroll@v1.2.2
