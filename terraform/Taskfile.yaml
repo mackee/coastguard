@@ -36,25 +36,22 @@ tasks:
   plan:
     desc: Plan the Terraform configuration
     cmds:
-      - task: build-lambda
-      - defer: rm -r bootstrap
+      - task: download-lambda
       - terraform plan {{ .TERRAFORM_ARGS }}
       - defer: rm -f coastguard.zip
   apply:
     desc: Apply the Terraform configuration
     cmds:
-      - task: build-lambda
-      - defer: rm -r bootstrap
+      - task: download-lambda
       - terraform apply {{ .TERRAFORM_ARGS }}
       - defer: rm -f coastguard.zip
-  build-lambda:
+  download-lambda:
     internal: true
-    desc: Build the Lambda function
+    desc: Download the Lambda function binary from GitHub
+    vars:
+      FILENAME: coastguard_linux_arm64.zip
+      VERSION: v0.1.1
+      CHECKSUM: 722470b326378966b7d37ad6b0b5f4e2926e42ebaf04cca92aa2cda73b600dd3
     cmds:
-      - task: lambda:build
-        vars:
-          OUTPUT_DIR: ../terraform
-includes:
-  lambda:
-    taskfile: ../lambda/Taskfile.yaml
-    dir: ../lambda
+      - curl -o coastguard.zip -sL https://github.com/mackee/coastguard/releases/download/{{ .VERSION }}/{{ .FILENAME }}
+      - shasum -a 256 coastguard.zip | grep {{ .CHECKSUM }} || (echo "Checksum verification failed" && exit 1)

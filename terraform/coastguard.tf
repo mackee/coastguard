@@ -2,7 +2,7 @@ resource "aws_lambda_function" "coastguard" {
   function_name = "coastguard"
   handler       = "bootstrap"
   runtime       = "provided.al2023"
-  filename      = data.archive_file.coastguard.output_path
+  filename      = "${path.module}/coastguard.zip"
   role          = aws_iam_role.coastguard.arn
   architectures = ["arm64"]
   memory_size   = 128
@@ -38,13 +38,6 @@ resource "aws_lambda_function_url" "coastguard" {
   function_name      = aws_lambda_function.coastguard.function_name
   authorization_type = "AWS_IAM"
   qualifier          = aws_lambda_alias.coastguard_current.name
-}
-
-data "archive_file" "coastguard" {
-  type        = "zip"
-  source_file = "${path.module}/bootstrap"
-  output_path = "${path.module}/coastguard.zip"
-
 }
 
 resource "aws_lambda_permission" "allow_cloudfront_coastguard" {
