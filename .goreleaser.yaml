@@ -9,19 +9,16 @@
 version: 2
 
 before:
-  hooks:
-    # You may remove this if you don't use go modules.
-    - go mod tidy
+  hooks: []
 
 builds:
-  - env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-    goarch:
-      - amd64
-      - arm64
+  - main: ./
     dir: ./lambda
+    env:
+      - CGO_ENABLED=0
+    targets:
+      - linux_amd64
+      - linux_arm64
     binary: bootstrap
     ldflags:
       - -s -w
@@ -31,7 +28,7 @@ archives:
     # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
       {{ .ProjectName }}_
-      {{- title .Os }}_
+      {{- .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
       {{- else }}{{ .Arch }}{{ end }}
 
