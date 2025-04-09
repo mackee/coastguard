@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  OUTPUT_DIR: ./
+tasks:
+  build:
+    desc: Build for lambda
+    cmds:
+      - go build -ldflags="-s -w" -o {{ .OUTPUT_DIR }}/bootstrap ./
+    env:
+      GOOS: linux
+      GOARCH: arm64
+      CGO_ENABLED: 0

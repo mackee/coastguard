@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  REGION:
+    sh: echo ${AWS_REGION:-ap-northeast-1}
+  PROJECT_NAME:
+    sh: echo ${PROJECT_NAME:-coastguard-demo}
+  REPO:
+    sh: echo ${REPO:-github.com/mackee/coastguard}
+  TERRAFORM_BUCKET:
+    sh: echo ${TERRAFORM_BUCKET:-coastguard-demo-terraform}
+  TERRAFORM_BUCKET_KEY:
+    sh: echo ${TERRAFORM_BUCKET_KEY:-coastguard-demo/terraform.tfstate}
+  TERRAFORM_BACKEND_CONFIG: -backend-config="bucket={{ .TERRAFORM_BUCKET }}" -backend-config="key={{ .TERRAFORM_BUCKET_KEY }}" -backend-config="region={{ .REGION }}"
+  TERRAFORM_ARGS: -var="region={{ .REGION }}" -var="project_name={{ .PROJECT_NAME }}" -var="repo={{ .REPO }}"
+tasks:
+  generate-private-key:
+    desc: Generate RSA key pair for signing
+    status:
+      - test -f private_key.pem
+    cmds:
+      - openssl genrsa -out private_key.pem 2048
+  generate-public-key:
+    desc: Generate public key from private key
+    status:
+      - test -f public_key.pem
+    deps:
+      - task: generate-private-key
+    cmds:
+      - openssl rsa -pubout -in private_key.pem -out public_key.pem
+  init:
+    desc: Initialize the Terraform configuration
+    cmds:
+      - terraform init {{ .TERRAFORM_BACKEND_CONFIG }}
+  plan:
+    desc: Plan the Terraform configuration
+    cmds:
+      - task: build-lambda
+      - defer: rm -r bootstrap
+      - terraform plan {{ .TERRAFORM_ARGS }}
+      - defer: rm -f coastguard.zip
+  apply:
+    desc: Apply the Terraform configuration
+    cmds:
+      - task: build-lambda
+      - defer: rm -r bootstrap
+      - terraform apply {{ .TERRAFORM_ARGS }}
+      - defer: rm -f coastguard.zip
+  build-lambda:
+    internal: true
+    desc: Build the Lambda function
+    cmds:
+      - task: lambda:build
+        vars:
+          OUTPUT_DIR: ../terraform
+includes:
+  lambda:
+    taskfile: ../lambda/Taskfile.yaml
+    dir: ../lambda

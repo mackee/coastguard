@@ -1,0 +1,6 @@
+private_key.pem
+oidc.json
+# Added by goreleaser init:
+dist/
+.terraform
+public_key.pem

@@ -14,3 +14,7 @@ packages:
 - name: golang/go@go1.24.1
 - name: fujiwara/cfft@v0.8.2
 - name: fujiwara/lambroll@v1.2.2
+- name: hashicorp/terraform@v1.11.3
+- name: hashicorp/terraform-ls@v0.36.4
+- name: jqlang/jq@jq-1.7.1
+- name: goreleaser/goreleaser@v2.8.2
