@@ -16,7 +16,7 @@ type registryFactory struct {
 
 func newRegistryFactory(opts *Options) (*registryFactory, error) {
 	gss := gsessions.NewCookieStore(opts.SessionSecret.Bytes())
-	tss, err := gorilla.NewStore(gss)
+	tss, err := gorilla.NewStore(gss, gorilla.WithSessionName(opts.SessionCookieName))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create session store: %w", err)
 	}

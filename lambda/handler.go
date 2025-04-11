@@ -37,6 +37,17 @@ func newHandler(opts *Options) (http.Handler, error) {
 		oidc.WithSuccessBehavior(func(ctx tanukirpc.Context[*registry], input *oidc.SuccessBehaviorInput) error {
 			resp := ctx.Response()
 			SetCookiesPresign(resp, opts)
+			http.SetCookie(resp, &http.Cookie{
+				Name:     opts.SessionCookieName,
+				Value:    "",
+				Quoted:   false,
+				Path:     "",
+				Domain:   "",
+				MaxAge:   -1,
+				Secure:   true,
+				HttpOnly: true,
+				SameSite: http.SameSiteLaxMode,
+			})
 
 			return nil
 		}),

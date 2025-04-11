@@ -77,6 +77,7 @@ type Options struct {
 	ClientID            string         `kong:"name='client-id',help='Client ID',required,env='CLIENT_ID'"`
 	ClientSecret        string         `kong:"name='client-secret',help='Client Secret',required,env='CLIENT_SECRET'"`
 	SessionSecret       base64secret   `kong:"name='session-secret',help='Session Secret',required,env='SESSION_SECRET'"`
+	SessionCookieName   string         `kong:"name='session-cookie-name',help='Session Cookie Name',default='coastguard_session',env='SESSION_COOKIE_NAME'"`
 	BaseURL             string         `kong:"name='base-url',help='Base URL',required,env='BASE_URL'"`
 	OIDCIssuer          string         `kong:"name='oidc-issuer',help='OIDC Issuer',required,env='OIDC_ISSUER'"`
 	AllowedDomains      []string       `kong:"name='allowed-domains',help='Allowed Domains',env='ALLOWED_DOMAINS'"`
