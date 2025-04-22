@@ -81,6 +81,7 @@ type Options struct {
 	BaseURL             string         `kong:"name='base-url',help='Base URL',required,env='BASE_URL'"`
 	OIDCIssuer          string         `kong:"name='oidc-issuer',help='OIDC Issuer',required,env='OIDC_ISSUER'"`
 	AllowedDomains      []string       `kong:"name='allowed-domains',help='Allowed Domains',env='ALLOWED_DOMAINS'"`
+	BypassIPs           []string       `kong:"name='bypass-ips',help='Bypass IPs',env='BYPASS_IPS'"`
 	PresignCookieAge    time.Duration  `kong:"name='presign-cookie-age',help='Presign Cookie Age',default='72h',env='PRESIGN_COOKIE_AGE'"`
 	RestrictPath        string         `kong:"name='restrict-path',help='Restrict Path',required,env='RESTRICT_PATH'"`
 	SignPrivateKey      *pemPrivateKey `kong:"name='sign-private-key',help='Sign Private Key',required,env='SIGN_PRIVATE_KEY'"`

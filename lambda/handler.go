@@ -4,7 +4,10 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"net"
 	"net/http"
+	"slices"
+	"strings"
 	"text/template"
 
 	"github.com/mackee/tanukirpc"
@@ -84,6 +87,14 @@ type templateArgs struct {
 
 func unauthorizedHandler(ctx tanukirpc.Context[*registry], _ struct{}) (_resp struct{}, err error) {
 	resp := ctx.Response()
+	// Check if the request is from a bypass IP
+	opts := ctx.Registry().options
+	bypassIPs := opts.BypassIPs
+	address := ctx.Request().Header.Get("CloudFront-Viewer-Address")
+	if isBypassIP(address, bypassIPs) {
+		SetCookiesPresign(resp, opts)
+		return struct{}{}, redirectToReferrer(ctx)
+	}
 	resp.Header().Set("Content-Type", "text/html")
 	resp.WriteHeader(http.StatusUnauthorized)
 	if err := tmpl.ExecuteTemplate(resp, "redirect.html", templateArgs{RedirectTo: "/__auth/redirect"}); err != nil {
@@ -91,4 +102,28 @@ func unauthorizedHandler(ctx tanukirpc.Context[*registry], _ struct{}) (_resp st
 	}
 
 	return struct{}{}, nil
+}
+
+func isBypassIP(address string, bypassIPs []string) bool {
+	host, _, err := net.SplitHostPort(address)
+	if err != nil {
+		return false
+	}
+	return slices.Contains(bypassIPs, host)
+}
+
+func redirectToReferrer(ctx tanukirpc.Context[*registry]) error {
+	req := ctx.Request()
+	referrer := req.Referer()
+	if referrer == "" {
+		return tanukirpc.ErrorRedirectTo(http.StatusFound, "/")
+	}
+	if strings.HasPrefix(referrer, "/") {
+		return tanukirpc.ErrorRedirectTo(http.StatusFound, referrer)
+	}
+	if trimmed := strings.TrimPrefix(referrer, ctx.Registry().options.BaseURL); trimmed != referrer {
+		return tanukirpc.ErrorRedirectTo(http.StatusFound, trimmed)
+	}
+
+	return tanukirpc.ErrorRedirectTo(http.StatusFound, "/")
 }
