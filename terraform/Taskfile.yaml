@@ -50,8 +50,8 @@ tasks:
     desc: Download the Lambda function binary from GitHub
     vars:
       FILENAME: coastguard_linux_arm64.zip
-      VERSION: v0.2.0
-      CHECKSUM: dcd6e382d9abd328832d6b42e3f3c4b5fbde0e1ed5dc311377ca5cdb1e868e14
+      VERSION: v0.3.1
+      CHECKSUM: 6f3dc7bcdcfe3cb00ffe49e6335ec872e33abc411f89470db3408ccac4913927
     cmds:
       - curl -o coastguard.zip -sL https://github.com/mackee/coastguard/releases/download/{{ .VERSION }}/{{ .FILENAME }}
       - shasum -a 256 coastguard.zip | grep {{ .CHECKSUM }} || (echo "Checksum verification failed" && exit 1)
