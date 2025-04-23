@@ -66,7 +66,19 @@ func newHandler(opts *Options) (http.Handler, error) {
 	)
 
 	r.Route("/__auth", func(router *tanukirpc.Router[*registry]) {
-		router.Get("/redirect", tanukirpc.NewHandler(oidcAuth.Redirect))
+		router.Get("/redirect", tanukirpc.NewHandler(
+			func(ctx tanukirpc.Context[*registry], _ struct{}) (_resp struct{}, err error) {
+				opts := ctx.Registry().options
+				bypassIPs := opts.BypassIPs
+				address := ctx.Request().Header.Get("CloudFront-Viewer-Address")
+				if isBypassIP(address, bypassIPs) {
+					SetCookiesPresign(ctx.Response(), opts)
+					return struct{}{}, redirectToReferrer(ctx)
+				}
+
+				return oidcAuth.Redirect(ctx, struct{}{})
+			},
+		))
 		router.Get("/callback", tanukirpc.NewHandler(oidcAuth.Callback))
 		router.Get("/logout", tanukirpc.NewHandler(logoutHandler))
 	})
@@ -88,13 +100,6 @@ type templateArgs struct {
 func unauthorizedHandler(ctx tanukirpc.Context[*registry], _ struct{}) (_resp struct{}, err error) {
 	resp := ctx.Response()
 	// Check if the request is from a bypass IP
-	opts := ctx.Registry().options
-	bypassIPs := opts.BypassIPs
-	address := ctx.Request().Header.Get("CloudFront-Viewer-Address")
-	if isBypassIP(address, bypassIPs) {
-		SetCookiesPresign(resp, opts)
-		return struct{}{}, redirectToReferrer(ctx)
-	}
 	resp.Header().Set("Content-Type", "text/html")
 	resp.WriteHeader(http.StatusUnauthorized)
 	if err := tmpl.ExecuteTemplate(resp, "redirect.html", templateArgs{RedirectTo: "/__auth/redirect"}); err != nil {
@@ -122,6 +127,9 @@ func redirectToReferrer(ctx tanukirpc.Context[*registry]) error {
 		return tanukirpc.ErrorRedirectTo(http.StatusFound, referrer)
 	}
 	if trimmed := strings.TrimPrefix(referrer, ctx.Registry().options.BaseURL); trimmed != referrer {
+		if trimmed == "" {
+			trimmed = "/"
+		}
 		return tanukirpc.ErrorRedirectTo(http.StatusFound, trimmed)
 	}
 
