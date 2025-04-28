@@ -130,6 +130,9 @@ func redirectToReferrer(ctx tanukirpc.Context[*registry]) error {
 		if trimmed == "" {
 			trimmed = "/"
 		}
+		if !strings.HasPrefix(trimmed, "/") {
+			trimmed = "/" + trimmed
+		}
 		return tanukirpc.ErrorRedirectTo(http.StatusFound, trimmed)
 	}
 
