@@ -74,18 +74,19 @@ func (p *pemPrivateKey) UnmarshalText(text []byte) error {
 }
 
 type Options struct {
-	ClientID            string         `kong:"name='client-id',help='Client ID',required,env='CLIENT_ID'"`
-	ClientSecret        string         `kong:"name='client-secret',help='Client Secret',required,env='CLIENT_SECRET'"`
-	SessionSecret       base64secret   `kong:"name='session-secret',help='Session Secret',required,env='SESSION_SECRET'"`
-	SessionCookieName   string         `kong:"name='session-cookie-name',help='Session Cookie Name',default='coastguard_session',env='SESSION_COOKIE_NAME'"`
-	BaseURL             string         `kong:"name='base-url',help='Base URL',required,env='BASE_URL'"`
-	OIDCIssuer          string         `kong:"name='oidc-issuer',help='OIDC Issuer',required,env='OIDC_ISSUER'"`
-	AllowedDomains      []string       `kong:"name='allowed-domains',help='Allowed Domains',env='ALLOWED_DOMAINS'"`
-	BypassIPs           []string       `kong:"name='bypass-ips',help='Bypass IPs',env='BYPASS_IPS'"`
-	PresignCookieAge    time.Duration  `kong:"name='presign-cookie-age',help='Presign Cookie Age',default='72h',env='PRESIGN_COOKIE_AGE'"`
-	RestrictPath        string         `kong:"name='restrict-path',help='Restrict Path',required,env='RESTRICT_PATH'"`
-	SignPrivateKey      *pemPrivateKey `kong:"name='sign-private-key',help='Sign Private Key',required,env='SIGN_PRIVATE_KEY'"`
-	CloudFrontKeyPairID string         `kong:"name='cloudfront-key-pair-id',help='CloudFront Key Pair ID',required,env='CLOUDFRONT_KEY_PAIR_ID'"`
+	ClientID               string         `kong:"name='client-id',help='Client ID',required,env='CLIENT_ID'"`
+	ClientSecret           string         `kong:"name='client-secret',help='Client Secret',required,env='CLIENT_SECRET'"`
+	SessionSecret          base64secret   `kong:"name='session-secret',help='Session Secret',required,env='SESSION_SECRET'"`
+	SessionCookieName      string         `kong:"name='session-cookie-name',help='Session Cookie Name',default='coastguard_session',env='SESSION_COOKIE_NAME'"`
+	BaseURL                string         `kong:"name='base-url',help='Base URL',required,env='BASE_URL'"`
+	OIDCIssuer             string         `kong:"name='oidc-issuer',help='OIDC Issuer',required,env='OIDC_ISSUER'"`
+	AllowedDomains         []string       `kong:"name='allowed-domains',help='Allowed Domains',env='ALLOWED_DOMAINS'"`
+	BypassIPs              []string       `kong:"name='bypass-ips',help='Bypass IPs',env='BYPASS_IPS'"`
+	PresignCookieAge       time.Duration  `kong:"name='presign-cookie-age',help='Presign Cookie Age',default='72h',env='PRESIGN_COOKIE_AGE'"`
+	RestrictPath           string         `kong:"name='restrict-path',help='Restrict Path',required,env='RESTRICT_PATH'"`
+	SignPrivateKey         *pemPrivateKey `kong:"name='sign-private-key',help='Sign Private Key',required,env='SIGN_PRIVATE_KEY'"`
+	CloudFrontKeyPairID    string         `kong:"name='cloudfront-key-pair-id',help='CloudFront Key Pair ID',required,env='CLOUDFRONT_KEY_PAIR_ID'"`
+	UnauthorizedStatusCode int            `kong:"name='unauthorized-status-code',help='Unauthorized Status Code',default='',env='UNAUTHORIZED_STATUS_CODE'"`
 }
 
 func main() {

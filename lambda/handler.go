@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"embed"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -36,7 +37,6 @@ func newHandler(opts *Options) (http.Handler, error) {
 	oidcOptions := []oidc.HandlersOption[*registry]{
 		oidc.WithDefaultReferrer[*registry]("/"),
 		oidc.WithReferrerBaseURL[*registry](opts.BaseURL),
-		oidc.WithUnauthorizedRedirect[*registry]("/"),
 		oidc.WithSuccessBehavior(func(ctx tanukirpc.Context[*registry], input *oidc.SuccessBehaviorInput) error {
 			resp := ctx.Response()
 			SetCookiesPresign(resp, opts)
@@ -57,6 +57,19 @@ func newHandler(opts *Options) (http.Handler, error) {
 	}
 	if len(opts.AllowedDomains) > 0 {
 		oidcOptions = append(oidcOptions, oidc.WithAllowedDomains[*registry](opts.AllowedDomains...))
+	}
+	if opts.UnauthorizedStatusCode != 0 {
+		oidcOptions = append(
+			oidcOptions,
+			oidc.WithUnauthorizedBehavior(func(ctx tanukirpc.Context[*registry]) error {
+				return tanukirpc.WrapErrorWithStatus(opts.UnauthorizedStatusCode, errors.New("unauthorized"))
+			}),
+		)
+	} else {
+		oidcOptions = append(
+			oidcOptions,
+			oidc.WithUnauthorizedRedirect[*registry]("/"),
+		)
 	}
 
 	oidcAuth := oidc.NewHandlers(
