@@ -71,6 +71,14 @@ func newHandler(opts *Options) (http.Handler, error) {
 			oidc.WithUnauthorizedRedirect[*registry]("/"),
 		)
 	}
+	if opts.NotAllowedDomainStatusCode != 0 {
+		oidcOptions = append(
+			oidcOptions,
+			oidc.WithNotAllowedDomainBehavior(func(ctx tanukirpc.Context[*registry]) error {
+				return tanukirpc.WrapErrorWithStatus(opts.NotAllowedDomainStatusCode, errors.New("not allowed domain"))
+			}),
+		)
+	}
 
 	oidcAuth := oidc.NewHandlers(
 		oauth2Config,

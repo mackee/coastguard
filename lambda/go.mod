@@ -8,7 +8,7 @@ require (
 	github.com/fujiwara/ridge v0.12.1
 	github.com/gorilla/sessions v1.4.0
 	github.com/handlename/ssmwrap/v2 v2.2.2
-	github.com/mackee/tanukirpc v0.5.3
+	github.com/mackee/tanukirpc v0.5.4
 	golang.org/x/oauth2 v0.23.0
 )
 
