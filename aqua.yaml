@@ -17,4 +17,4 @@ packages:
 - name: hashicorp/terraform@v1.11.3
 - name: hashicorp/terraform-ls@v0.36.4
 - name: jqlang/jq@jq-1.7.1
-- name: goreleaser/goreleaser@v2.8.2
+- name: goreleaser/goreleaser@v2.12.7
