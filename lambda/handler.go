@@ -147,7 +147,7 @@ func redirectToReferrer(ctx tanukirpc.Context[*registry]) error {
 	if strings.HasPrefix(referrer, "/") {
 		return tanukirpc.ErrorRedirectTo(http.StatusFound, referrer)
 	}
-	if trimmed := strings.TrimPrefix(referrer, ctx.Registry().options.BaseURL); trimmed != referrer {
+	if trimmed, ok := strings.CutPrefix(referrer, ctx.Registry().options.BaseURL); ok {
 		if trimmed == "" {
 			trimmed = "/"
 		}
