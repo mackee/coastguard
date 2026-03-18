@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
 	gsessions "github.com/gorilla/sessions"
+	"github.com/mackee/tanukirpc"
 	"github.com/mackee/tanukirpc/sessions"
 	"github.com/mackee/tanukirpc/sessions/gorilla"
 )
@@ -35,6 +37,14 @@ type registry struct {
 func (r *registryFactory) NewRegistry(w http.ResponseWriter, req *http.Request) (*registry, error) {
 	session, err := r.sessionStore.GetAccessor(req)
 	if err != nil {
+		if sessions.IsInvalidSessionError(err) {
+			http.SetCookie(w, &http.Cookie{
+				Name:   r.options.SessionCookieName,
+				Value:  "",
+				MaxAge: -1,
+			})
+			return nil, tanukirpc.WrapErrorWithStatus(http.StatusFound, errors.New("invalid session, redirecting to login"))
+		}
 		return nil, fmt.Errorf("failed to get session: %w", err)
 	}
 
