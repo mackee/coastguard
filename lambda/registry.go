@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -43,7 +42,7 @@ func (r *registryFactory) NewRegistry(w http.ResponseWriter, req *http.Request) 
 				Value:  "",
 				MaxAge: -1,
 			})
-			return nil, tanukirpc.WrapErrorWithStatus(http.StatusFound, errors.New("invalid session, redirecting to login"))
+			return nil, tanukirpc.ErrorRedirectTo(http.StatusFound, "/__auth/redirect")
 		}
 		return nil, fmt.Errorf("failed to get session: %w", err)
 	}
