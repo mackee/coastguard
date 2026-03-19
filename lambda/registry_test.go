@@ -9,7 +9,7 @@ import (
 	main "github.com/mackee/coastguard/lambda"
 )
 
-func TestNewRegistry_InvalidSession_ClearsCookieAndRedirects(t *testing.T) {
+func TestNewRegistry_InvalidSession_ClearsCookieAndContinues(t *testing.T) {
 	cookieName := "coastguard_session"
 	oldSecret := []byte("old-secret-key-1234567890123456")
 	newSecret := []byte("new-secret-key-1234567890123456")
@@ -73,12 +73,9 @@ func TestNewRegistry_InvalidSession_ClearsCookieAndRedirects(t *testing.T) {
 		t.Fatalf("failed to request new server: %v", err)
 	}
 
-	// Verify redirect to /__auth/redirect
-	if resp.StatusCode != http.StatusFound {
-		t.Errorf("expected status %d, got %d", http.StatusFound, resp.StatusCode)
-	}
-	if loc := resp.Header.Get("Location"); loc != "/__auth/redirect" {
-		t.Errorf("expected Location header %q, got %q", "/__auth/redirect", loc)
+	// Verify the request succeeds (handler is reached despite invalid session)
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
 	}
 
 	// Verify cookie is cleared

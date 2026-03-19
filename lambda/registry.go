@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	gsessions "github.com/gorilla/sessions"
-	"github.com/mackee/tanukirpc"
 	"github.com/mackee/tanukirpc/sessions"
 	"github.com/mackee/tanukirpc/sessions/gorilla"
 )
@@ -42,9 +41,9 @@ func (r *registryFactory) NewRegistry(w http.ResponseWriter, req *http.Request) 
 				Value:  "",
 				MaxAge: -1,
 			})
-			return nil, tanukirpc.ErrorRedirectTo(http.StatusFound, "/__auth/redirect")
+		} else {
+			return nil, fmt.Errorf("failed to get session: %w", err)
 		}
-		return nil, fmt.Errorf("failed to get session: %w", err)
 	}
 
 	return &registry{

@@ -143,6 +143,8 @@ github.com/mackee/tanukirpc v0.5.4 h1:JZT1NkCrz6ZfsHEge58I63FuwPYqN2b/YxUUc+nIFZ
 github.com/mackee/tanukirpc v0.5.4/go.mod h1:XIVoyeZC6wqCfM2Y22/XBHK1o0T8u2PHfu8XL1SrttU=
 github.com/mackee/tanukirpc v0.8.0 h1:sZjrjthN3tY/o6XJWsddnWUBZJC0oilAtlz1KUgV4eU=
 github.com/mackee/tanukirpc v0.8.0/go.mod h1:oKB6rMCJB8KjNin/Y3m9ujqGNTs6Ay1pwfXESBne63I=
+github.com/mackee/tanukirpc v0.8.1 h1:ulTyi7eEMjc/x4L00UjllHnn+6hWcGgV0CASKK/Ptlw=
+github.com/mackee/tanukirpc v0.8.1/go.mod h1:oKB6rMCJB8KjNin/Y3m9ujqGNTs6Ay1pwfXESBne63I=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/pires/go-proxyproto v0.7.0 h1:IukmRewDQFWC7kfnb66CSomk2q/seBuilHBYFwyq0Hs=
