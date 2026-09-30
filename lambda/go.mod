@@ -1,6 +1,6 @@
 module github.com/mackee/coastguard/lambda
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/alecthomas/kong v1.14.0
@@ -8,7 +8,7 @@ require (
 	github.com/fujiwara/ridge v0.13.1
 	github.com/gorilla/sessions v1.4.0
 	github.com/handlename/ssmwrap/v2 v2.2.5
-	github.com/mackee/tanukirpc v0.8.1
+	github.com/mackee/tanukirpc v0.11.0
 	golang.org/x/oauth2 v0.36.0
 )
 
@@ -40,15 +40,12 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/hetiansu5/urlquery v1.2.7 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/lmittmann/tint v1.1.3 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pires/go-proxyproto v0.11.0 // indirect
 	github.com/samber/lo v1.53.0 // indirect
-	github.com/stretchr/testify v1.11.1 // indirect
 	golang.org/x/crypto v0.49.0 // indirect
-	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
 )

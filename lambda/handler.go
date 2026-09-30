@@ -55,8 +55,8 @@ func newHandler(opts *Options) (http.Handler, error) {
 			return nil
 		}),
 	}
-	if len(opts.AllowedDomains) > 0 {
-		oidcOptions = append(oidcOptions, oidc.WithAllowedDomains[*registry](opts.AllowedDomains...))
+	if allowFunc, ok := newAllowFunc(opts); ok {
+		oidcOptions = append(oidcOptions, oidc.WithAllowFunc(allowFunc))
 	}
 	if opts.UnauthorizedStatusCode != 0 {
 		oidcOptions = append(
@@ -74,8 +74,8 @@ func newHandler(opts *Options) (http.Handler, error) {
 	if opts.NotAllowedDomainStatusCode != 0 {
 		oidcOptions = append(
 			oidcOptions,
-			oidc.WithNotAllowedDomainBehavior(func(ctx tanukirpc.Context[*registry]) error {
-				return tanukirpc.WrapErrorWithStatus(opts.NotAllowedDomainStatusCode, errors.New("not allowed domain"))
+			oidc.WithNotAllowedBehavior(func(ctx tanukirpc.Context[*registry]) error {
+				return tanukirpc.WrapErrorWithStatus(opts.NotAllowedDomainStatusCode, errors.New("not allowed"))
 			}),
 		)
 	}

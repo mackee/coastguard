@@ -14,6 +14,7 @@ resource "aws_lambda_function" "coastguard" {
       PRESIGN_COOKIE_AGE     = "10h"
       RESTRICT_PATH          = "/"
       ALLOWED_DOMAINS        = ""
+      ALLOWED_EMAILS         = ""
       CLOUDFRONT_KEY_PAIR_ID = aws_cloudfront_public_key.coastguard.id
     }
   }
