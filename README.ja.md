@@ -6,7 +6,7 @@ Coastguardは、AWS CloudFrontディストリビューションの前に配置�
 
 *   OIDCプロバイダーによるユーザー認証
 *   CloudFront署名付きCookieを使用したアクセス制御
-*   特定のメールドメインを持つユーザーのみにアクセスを制限する機能（オプション）
+*   特定のGoogle Workspaceドメイン (`ALLOWED_DOMAINS`) または特定のメールアドレス (`ALLOWED_EMAILS`) のユーザーのみにアクセスを制限する機能（オプション）。両方を設定した場合はいずれかに一致すれば許可されます。特定のユーザーのみに絞る場合は `ALLOWED_EMAILS` のみを設定してください。
 *   AWS Lambda上で動作するサーバーレスアーキテクチャ
 *   Terraformによるインフラストラクチャ管理
 

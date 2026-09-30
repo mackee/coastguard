@@ -8,7 +8,7 @@ Coastguard is an authentication layer placed in front of AWS CloudFront distribu
 
 *   User authentication via OIDC provider.
 *   Access control using CloudFront signed cookies.
-*   Optional restriction of access to users with specific email domains.
+*   Optional restriction of access to users with specific Google Workspace domains (`ALLOWED_DOMAINS`) or specific email addresses (`ALLOWED_EMAILS`). When both are set, users matching either of them are allowed. To allow only specific users, set `ALLOWED_EMAILS` alone.
 *   Serverless architecture running on AWS Lambda.
 *   Infrastructure management using Terraform.
 

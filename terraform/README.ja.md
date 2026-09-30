@@ -17,18 +17,18 @@
     *   **注意:** Terraformは `./coastguard.zip` にzipファイルがあることを期待しています (`coastguard.tf` 内の `aws_lambda_function.coastguard` リソースの `filename` 引数を参照)。
 
 2.  **Terraform変数の設定:**
-    *   `variables.tf`で定義されている変数の値を設定します。主な変数は以下の通りです:
+    *   `variables.tf`で定義されている変数の値を設定します:
         *   `region`: AWSリージョン
-        *   `prefix`: リソース名に使用されるプレフィックス
-        *   `oidc_client_id`: OIDCプロバイダーのクライアントID
-        *   `oidc_client_secret`: OIDCプロバイダーのクライアントシークレット
-        *   `oidc_issuer_url`: OIDCプロバイダーのIssuer URL
-        *   `redirect_url`: OIDCプロバイダーに登録したリダイレクトURL (例: `https://<your-cloudfront-domain>/__auth/callback`)
-        *   `session_secret`: セッション管理用のランダムなシークレットキー
-        *   `allowed_domains`: (オプション) アクセスを許可するメールドメインのリスト (例: `["example.com"]`)
-        *   `cloudfront_public_key_pem`: CloudFront署名付きCookie用の公開鍵 (`public_key.pem`の内容)
-        *   `cloudfront_private_key_pem`: CloudFront署名付きCookie用の秘密鍵 (`private_key.pem`の内容)
-    *   これらの変数は、`.tfvars`ファイルを使用するか、環境変数 (`TF_VAR_variable_name`) として設定するのが一般的です。**機密情報（シークレット、秘密鍵）はバージョン管理に含めないでください。** SSM Parameter StoreやSecrets Managerの使用を検討してください（現在のコードではSSM Parameter Storeに保存するようになっています）。
+        *   `project_name`: リソース名やタグに使用されるプロジェクト名 (デフォルト: `coastguard-demo`)
+        *   `repo`: タグに使用されるリポジトリ名 (デフォルト: `github.com/mackee/coastguard`)
+        *   `allowed_domains`: (オプション) アクセスを許可するGoogle Workspaceドメイン (`hd`クレーム) のリスト (例: `["example.com"]`)
+        *   `allowed_emails`: (オプション) アクセスを許可するメールアドレスのリスト (例: `["guest@gmail.com"]`)。検証済みのメールアドレスのみ一致とみなされます
+        *   `allowed_domains` と `allowed_emails` のいずれかに一致すれば許可されます。両方が空の場合は認証済みの全ユーザーが許可されます。特定のユーザーのみに絞る場合は `allowed_emails` のみを設定してください。
+    *   `task plan` / `task apply` は `region`、`project_name`、`repo` を環境変数 `AWS_REGION`、`PROJECT_NAME`、`REPO` から渡します。その他の変数は `.tfvars` ファイルか環境変数 (`TF_VAR_variable_name`、例: `TF_VAR_allowed_emails='["guest@gmail.com"]'`) で設定してください。
+    *   以下のファイルをこの `terraform/` ディレクトリに配置します。内容はSSM Parameter Storeに保存されます。**バージョン管理に含めないでください**（`.gitignore` に登録済みです）。
+        *   `oidc.json`: OIDCプロバイダー (Google) からダウンロードしたOAuthクライアントのJSON。クライアントIDとシークレットはここから読み込まれます
+        *   `private_key.pem` / `public_key.pem`: CloudFront署名付きCookie用のキーペア (`task generate-public-key` で生成できます)
+    *   セッションシークレットは自動生成されます。
 
 3.  **Terraformの実行:**
     ```bash
