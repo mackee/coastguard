@@ -19,18 +19,18 @@ This directory contains the Terraform code to deploy Coastguard on AWS.
     *   **Note:** Terraform expects the zip file at `./coastguard.zip` (see the `filename` argument in the `aws_lambda_function.coastguard` resource within `coastguard.tf`).
 
 2.  **Configure Terraform Variables:**
-    *   Set the values for the variables defined in `variables.tf`. Key variables include:
+    *   Set the values for the variables defined in `variables.tf`:
         *   `region`: AWS region.
-        *   `prefix`: Prefix used for resource names.
-        *   `oidc_client_id`: Client ID from your OIDC provider.
-        *   `oidc_client_secret`: Client Secret from your OIDC provider.
-        *   `oidc_issuer_url`: Issuer URL of your OIDC provider.
-        *   `redirect_url`: The redirect URL registered with your OIDC provider (e.g., `https://<your-cloudfront-domain>/__auth/callback`).
-        *   `session_secret`: A random secret key for session management.
-        *   `allowed_domains`: (Optional) List of email domains allowed access (e.g., `["example.com"]`).
-        *   `cloudfront_public_key_pem`: Public key content for CloudFront signed cookies (content of `public_key.pem`).
-        *   `cloudfront_private_key_pem`: Private key content for CloudFront signed cookies (content of `private_key.pem`).
-    *   It's common practice to set these variables using a `.tfvars` file or environment variables (`TF_VAR_variable_name`). **Do not commit sensitive information (secrets, private keys) to version control.** Consider using SSM Parameter Store or Secrets Manager (the current code is configured to store them in SSM Parameter Store).
+        *   `project_name`: Project name used for resource names and tags (default: `coastguard-demo`).
+        *   `repo`: Repository name used for tags (default: `github.com/mackee/coastguard`).
+        *   `allowed_domains`: (Optional) List of Google Workspace domains (`hd` claim) allowed access (e.g., `["example.com"]`).
+        *   `allowed_emails`: (Optional) List of email addresses allowed access (e.g., `["guest@gmail.com"]`). Only verified emails are matched.
+        *   Users matching either `allowed_domains` or `allowed_emails` are allowed. If both are empty, all authenticated users are allowed. To allow only specific users, set `allowed_emails` alone.
+    *   The `task plan` / `task apply` commands pass `region`, `project_name` and `repo` from the `AWS_REGION`, `PROJECT_NAME` and `REPO` environment variables. Set other variables via a `.tfvars` file or environment variables (`TF_VAR_variable_name`, e.g., `TF_VAR_allowed_emails='["guest@gmail.com"]'`).
+    *   Place the following files in this `terraform/` directory. Their contents are stored in SSM Parameter Store. **Do not commit them to version control** (they are listed in `.gitignore`).
+        *   `oidc.json`: The OAuth client JSON downloaded from your OIDC provider (Google). The client ID and secret are read from it.
+        *   `private_key.pem` / `public_key.pem`: The key pair for CloudFront signed cookies (`task generate-public-key` generates them).
+    *   The session secret is generated automatically.
 
 3.  **Run Terraform:**
     ```bash

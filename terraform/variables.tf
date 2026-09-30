@@ -13,3 +13,15 @@ variable "repo" {
   type        = string
   default     = "github.com/mackee/coastguard"
 }
+
+variable "allowed_domains" {
+  description = "Google Workspace domains (hd claim) allowed to access. Users matching either allowed_domains or allowed_emails are allowed. If both are empty, all authenticated users are allowed."
+  type        = list(string)
+  default     = []
+}
+
+variable "allowed_emails" {
+  description = "Email addresses allowed to access. Users matching either allowed_domains or allowed_emails are allowed. If both are empty, all authenticated users are allowed."
+  type        = list(string)
+  default     = []
+}

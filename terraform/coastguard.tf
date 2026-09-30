@@ -13,8 +13,8 @@ resource "aws_lambda_function" "coastguard" {
       OIDC_ISSUER            = "https://accounts.google.com"
       PRESIGN_COOKIE_AGE     = "10h"
       RESTRICT_PATH          = "/"
-      ALLOWED_DOMAINS        = ""
-      ALLOWED_EMAILS         = ""
+      ALLOWED_DOMAINS        = join(",", var.allowed_domains)
+      ALLOWED_EMAILS         = join(",", var.allowed_emails)
       CLOUDFRONT_KEY_PAIR_ID = aws_cloudfront_public_key.coastguard.id
     }
   }
